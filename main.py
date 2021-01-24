@@ -66,7 +66,16 @@ async def on_message(message):
         await message.channel.send('Information saved! Now you can use command !rank')
 
     if message.content.startswith('!help'):
-        await message.channel.send('To know your rank use, first add your details using command : !setup <user-id> <region-code>\n\n Then you can user command !rank\n\nRegion Codes :\n  Asia - ap\n  Europe- eu\n  America - na\n  Korea - kr')
+        embedVar = discord.Embed(title='ValoElo Help', description="To know your rank, you first have to configure the bot", color=0x0099ff)
+        embedVar.add_field(name="To setup use :", value='**!setup** <user-id> <region-code>', inline=False)
+        embedVar.add_field(name="Then you can use command", value='**!rank**', inline=False)
+        embedVar.add_field(name="Region Codes", value='use these code during setup', inline=False)
+        embedVar.add_field(name="Asia", value='ap', inline=True)
+        embedVar.add_field(name="Europe", value='eu', inline=True)
+        embedVar.add_field(name="America", value='na', inline=True)
+        embedVar.add_field(name="Korea", value='kr', inline=True)
+        embedVar.set_footer(text='This bot is not affliated with Riot Games. This bot is not injecting or modifying the game in any sort of way. It is simply just making a webrequest to your API which then returns a json that I parse and display. If Riot Games have any issue then I am ready to take this project down.')
+        await message.channel.send(embed=embedVar)
 
     if message.content.startswith('!rank'):
         try:
@@ -84,8 +93,13 @@ async def on_message(message):
         TierAfterUpdate = match['TierAfterUpdate'] * 100
         rr = match['RankedRatingAfterUpdate'];
         rank = rankMap[f"{match['TierAfterUpdate']}"]
-        msg_out = f'https://firebasestorage.googleapis.com/v0/b/cloud-storage-test-ac898.appspot.com/o/{match["TierAfterUpdate"]}.png?alt=media\nRank : {rank}\nRank Rating : {rr}\nElo : {TierAfterUpdate - 300 + rr}\nRating for last 3 match : {updateToLatestGames(matches)}'
-        await message.channel.send(msg_out)
+        embedVar = discord.Embed(title=rank, description="Your valorant rank", color=0x0099ff)
+        embedVar.set_thumbnail(url=f'https://firebasestorage.googleapis.com/v0/b/cloud-storage-test-ac898.appspot.com/o/{match["TierAfterUpdate"]}.png?alt=media')
+        embedVar.add_field(name="Rank Rating", value=rr, inline=True)
+        embedVar.add_field(name="Elo", value=TierAfterUpdate - 300 + rr, inline=True)
+        embedVar.add_field(name="Rating for last 3 match", value=updateToLatestGames(matches), inline=True)
+        await message.channel.send(embed=embedVar)
+        # await message.channel.send(msg_out)
     
     # if message.content.startswith('!rank'):
     #     msg_in = message.content.split(" ")
