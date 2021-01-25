@@ -103,22 +103,6 @@ async def on_message(message):
         embedVar.add_field(name="Elo", value=TierAfterUpdate - 300 + rr, inline=True)
         embedVar.add_field(name="Rating for last 3 match", value=updateToLatestGames(matches), inline=True)
         await message.channel.send(embed=embedVar)
-        # await message.channel.send(msg_out)
-    
-    # if message.content.startswith('!rank'):
-    #     msg_in = message.content.split(" ")
-    #     data = await login(msg_in[1],msg_in[2])
-    #     matches = data['Matches']
-    #     for element in matches:
-    #         if(element['RankedRatingAfterUpdate'] != 0):
-    #             match = element
-    #             break
-    #         else:
-    #             match = element
-    #     TierAfterUpdate = match['TierAfterUpdate'] * 100
-    #     rr = match['RankedRatingAfterUpdate'];
-    #     msg_out = f'Rank Rating : {rr}\nElo : {TierAfterUpdate - 300 + rr}\nRating for last 3 match : {updateToLatestGames(matches)}'
-    #     await message.channel.send(msg_out)
         
 keep_alive()
 client.run(os.getenv('TOKEN'))
