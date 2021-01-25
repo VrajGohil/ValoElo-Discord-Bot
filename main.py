@@ -56,6 +56,9 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
     
+    if message.content.startswith('!server'):
+        await message.channel.send(f'Currently, ValoElo Bot is active at {len(client.guilds)} servers')
+    
     if message.content.startswith('!quote'):
         quote = get_quote()
         await message.channel.send(quote)
@@ -68,6 +71,7 @@ async def on_message(message):
     if message.content.startswith('!help'):
         embedVar = discord.Embed(title='ValoElo Help', description="To know your rank, you first have to configure the bot", color=0x0099ff)
         embedVar.add_field(name="To setup use :", value='**!setup** <user-id> <region-code>', inline=False)
+        embedVar.add_field(name="Or use our app to get setup code", value='https://github.com/VrajGohil/ValorantEloTracker/releases', inline=False)
         embedVar.add_field(name="Then you can use command", value='**!rank**', inline=False)
         embedVar.add_field(name="Region Codes", value='use these code during setup', inline=False)
         embedVar.add_field(name="Asia", value='ap', inline=True)
@@ -82,7 +86,7 @@ async def on_message(message):
             user = db[message.author.mention]
         except:
             await message.channel.send('Use !setup first')
-        data = await get_with_userid('forthepain', 'Microstar1', user['name'], user['region'])
+        data = await get_with_userid(os.getenv('USERNAME'), os.getenv('PASSWORD'), user['name'], user['region'])
         matches = data['Matches']
         for element in matches:
             if(element['RankedRatingAfterUpdate'] != 0):
