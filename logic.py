@@ -41,7 +41,6 @@ async def login(username, password):
     print('User ID: ' + user_id)
     headers['X-Riot-Entitlements-JWT'] = entitlements_token
     
-    # Example Request. (Access Token and Entitlements Token needs to be included!)
     async with session.get(f'https://pd.eu.a.pvp.net/mmr/v1/players/{user_id}/competitiveupdates?startIndex=0&endIndex=20', headers=headers) as r:
         data = json.loads(await r.text())
     print(data)
