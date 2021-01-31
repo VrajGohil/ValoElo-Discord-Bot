@@ -4,8 +4,7 @@ import requests
 import json
 from keep_alive import keep_alive
 from logic import login
-from logic import updateToLatestGames
-from logic import get_with_userid
+from logic import get_with_userid,setup,updateToLatestGames
 from replit import db
 
 
@@ -64,14 +63,18 @@ async def on_message(message):
         await message.channel.send(quote)
     
     if message.content.startswith('!setup'): 
-        msg_in = message.content.split(" ") 
-        db[message.author.mention] = {"name":msg_in[1],"region": msg_in[2]}
-        await message.channel.send('Information saved! Now you can use command !rank')
+        msg_in = message.content.split(" ")
+        try:
+          await setup(msg_in,message.author.mention)
+        except:
+          await message.channel.send("Player not found!!! Use !setup again")
+        else:
+          await message.channel.send('Information saved! Now you can use command !rank')
 
     if message.content.startswith('!help'):
         embedVar = discord.Embed(title='ValoElo Help', description="To know your rank, you first have to configure the bot", color=0x0099ff)
         embedVar.add_field(name="To setup use :", value='**!setup** <user-id> <region-code>', inline=False)
-        embedVar.add_field(name="Or use our app to get setup code", value='https://github.com/VrajGohil/ValorantEloTracker/releases', inline=False)
+        embedVar.add_field(name="Example", value='!setup playername#tagline ap', inline=False)
         embedVar.add_field(name="Then you can use command", value='**!rank**', inline=False)
         embedVar.add_field(name="Region Codes", value='use these code during setup', inline=False)
         embedVar.add_field(name="Asia", value='ap', inline=True)
@@ -86,8 +89,11 @@ async def on_message(message):
             user = db[message.author.mention]
         except:
             await message.channel.send('Use !setup first')
-        data = await get_with_userid(os.getenv('USERNAME'), os.getenv('PASSWORD'), user['name'], user['region'])
-        matches = data['Matches']
+        try:
+            data = await get_with_userid(os.getenv('USERNAME'), os.getenv('PASSWORD'), user['puuid'], user['region'])
+            matches = data['Matches']
+        except:
+            await message.channel.send('error: userid not found or invalid, check your region too')
         for element in matches:
             if(element['RankedRatingAfterUpdate'] != 0):
                 match = element

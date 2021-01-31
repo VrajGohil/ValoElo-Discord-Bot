@@ -1,6 +1,7 @@
 import re
 import aiohttp
 import json
+from replit import db
 
 async def login(username, password):
     session = aiohttp.ClientSession()
@@ -62,6 +63,17 @@ def updateToLatestGames(matches):
             if (count >= 3):
                 break
     return points
+
+async def setup(msg_in,discord_user):
+    session = aiohttp.ClientSession()
+    player_name = msg_in[1].split("#")[0]
+    tagline = msg_in[1].split("#")[1]
+    async with session.get(f'https://api.henrikdev.xyz/valorant/v1/puuid/{player_name}/{tagline}') as r:
+        data = json.loads(await r.text())
+        puuid = data['data']['puuid']
+    await session.close()
+    db[discord_user] = {"name":msg_in[1],"region": msg_in[2],"puuid": puuid}
+    return data
 
 async def get_with_userid(username, password,user_id,region):
     session = aiohttp.ClientSession()
