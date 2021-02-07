@@ -66,13 +66,21 @@ def updateToLatestGames(matches):
 
 async def setup(msg_in,discord_user):
     session = aiohttp.ClientSession()
-    player_name = msg_in[1].split("#")[0]
-    tagline = msg_in[1].split("#")[1]
+    name = ''
+    for i in range (1, len(msg_in)-1):
+        name+= ' '
+        name+=msg_in[i]
+    print(name)
+    player_name = name.split("#")[0].strip()
+    print(player_name)
+    tagline = name.split("#")[1].strip()
+    print(tagline)
+    print(msg_in[-1])
     async with session.get(f'https://api.henrikdev.xyz/valorant/v1/puuid/{player_name}/{tagline}') as r:
         data = json.loads(await r.text())
         puuid = data['data']['puuid']
     await session.close()
-    db[discord_user] = {"name":msg_in[1],"region": msg_in[2],"puuid": puuid}
+    db[discord_user] = {"name":name,"region": msg_in[-1],"puuid": puuid}
     return data
 
 async def get_with_userid(username, password,user_id,region):
@@ -113,7 +121,7 @@ async def get_with_userid(username, password,user_id,region):
     # Example Request. (Access Token and Entitlements Token needs to be included!)
     async with session.get(f'https://pd.{region}.a.pvp.net/mmr/v1/players/{user_id}/competitiveupdates?startIndex=0&endIndex=20', headers=headers) as r:
         data = json.loads(await r.text())
-    print(data)
+    print(json.dumps(data, indent=2))
 
     await session.close()
     return(data)

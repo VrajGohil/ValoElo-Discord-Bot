@@ -33,7 +33,9 @@ rankMap = {
   "19": "Diamond 2",
   "20": "Diamond 3",
   "21": "Immortal",
-  "22": "Radiant"
+  "22": "Immortal",
+  "23": "Immortal",
+  "24": "Radiant"
 }
 
 
@@ -103,7 +105,7 @@ async def on_message(message):
         TierAfterUpdate = match['TierAfterUpdate'] * 100
         rr = match['RankedRatingAfterUpdate'];
         rank = rankMap[f"{match['TierAfterUpdate']}"]
-        embedVar = discord.Embed(title=rank, description="Your valorant rank", color=0x0099ff)
+        embedVar = discord.Embed(title=user['name'], description=rank, color=0x0099ff)
         embedVar.set_thumbnail(url=f'https://firebasestorage.googleapis.com/v0/b/cloud-storage-test-ac898.appspot.com/o/{match["TierAfterUpdate"]}.png?alt=media')
         embedVar.add_field(name="Rank Rating", value=rr, inline=True)
         embedVar.add_field(name="Elo", value=TierAfterUpdate - 300 + rr, inline=True)
